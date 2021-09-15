@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    container_name: users_ms_db
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    env_file:
+      - ./docker/postgres/.env.dev
+    networks:
+      - users_ms_network
   web:
     container_name: users_ms
     build:
@@ -15,26 +28,11 @@ services:
       - ./docker/api/.env.dev
     depends_on:
       - db
-    links:
-      - db:db
     networks:
       - users_ms_network
-  db:
-    container_name: users_ms_db
-    build:
-      context: ./
-      dockerfile: ./docker/postgres/Dockerfile
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    ports:
-      - 5432:5432
-    env_file:
-      - ./docker/postgres/.env.dev
-    networks:
-      - users_ms_network
+
 
 volumes:
   postgres_data:
 networks:
   users_ms_network:
-    driver: bridge
