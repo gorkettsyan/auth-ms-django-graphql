@@ -1,4 +1,5 @@
 import graphene
+import graphql_jwt
 from graphene_django import DjangoObjectType
 
 from .models import User
@@ -22,3 +23,21 @@ class UserQuery(graphene.ObjectType):
             return User.objects.get(username=username)
         except User.DoesNotExist:
             return None
+
+
+class UserMutation(graphene.Mutation):
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+
+    user = graphene.Field(UserType)
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+
+        user = User(username=kwargs['username'])
+        user.set_password(kwargs['password'])
+
+        user.save()
+
+        return UserMutation(user=user)
