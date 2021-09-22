@@ -61,6 +61,10 @@ GRAPHENE = {
     ],
 }
 
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ARGUMENT": True
+}
+
 
 AUTHENTICATION_BACKENDS = [
     "graphql_jwt.backends.JSONWebTokenBackend",

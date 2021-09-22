@@ -1,5 +1,5 @@
 import graphene
-import graphql_jwt
+from graphql_jwt.decorators import login_required
 from graphene_django import DjangoObjectType
 
 from .models import User
@@ -8,21 +8,16 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         fields = ("id", "username", "email", "first_name",
-                  "last_name", "is_staff", "is_active", "password",
+                  "last_name", "is_staff", "is_active",
                   "date_of_birth")
 
 
 class UserQuery(graphene.ObjectType):
-    all_users = graphene.List(UserType)
+    user = graphene.Field(UserType, token=graphene.String(required=True))
 
-    def resolve_all_users(root, info):
-        return User.objects.all()
-
-    def resolve_user_by_username(root, info, username):
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            return None
+    @login_required
+    def resolve_user(self, info, **kwargs):
+        return info.context.user
 
 
 class UserMutation(graphene.Mutation):
