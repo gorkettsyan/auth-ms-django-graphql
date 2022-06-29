@@ -1,7 +1,7 @@
 aniso8601==7.0.0
 asgiref==3.4.1
 django-graphql-jwt==0.3.4
-django==3.2.12
+django==3.2.13
 graphene-django==2.15.0
 graphene==2.1.9
 graphql-core==2.3.2
